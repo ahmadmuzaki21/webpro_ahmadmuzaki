@@ -1,8 +1,6 @@
-const CACHE = "web-profil-v1";
+const CACHE = "web-profil-v2";
 
 const ASSETS = [
-  "/",
-  "/index.html",
   "/bundle.js",
   "/manifest.json",
   "/images/1.jpg",
