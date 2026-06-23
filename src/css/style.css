@@ -29,22 +29,15 @@ body {
 
 .nav-primary {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Tombol tetap di kanan */
   align-items: center;
+  gap: 12px;
   width: 100%;
-  padding: 15px 40px;
-  box-sizing: border-box;
+  padding: 15px 40px; /* Padding ini di dalam header, tidak merusak full-width */
+  box-sizing: border-box; /* Kunci agar padding tidak menambah lebar */
   background-color: #1e293b;
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-.nav-menu {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.hamburger {
-  display: none !important;
+  border-radius: 0; /* Full border */
 }
 .nav-primary button {
   /* Tampilan Dasar */
@@ -701,40 +694,23 @@ footer:hover {
 
 /* ----- Tablet Kecil & Phablet (≤ 768px) ----- */
 @media (max-width: 768px) {
-  /* Hamburger Menu Mobile */
+  /* Navigasi: tombol wrap & center */
   .nav-primary {
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 15px 20px;
-  }
-  .hamburger {
-    display: block !important;
-  }
-  .nav-menu {
-    display: none;
-    flex-direction: column;
-    width: 100%;
     gap: 10px;
-    margin-top: 15px;
   }
-  .nav-menu.show {
-    display: flex;
-  }
-  .nav-menu button {
-    width: 100%;
-    padding: 12px;
+
+  .nav-primary button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 
   .sub-nav {
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    gap: 15px;
     padding: 12px 10px;
-  }
-  .sub-nav button {
-    white-space: nowrap;
-    flex: 1 1 auto;
-    font-size: 0.85rem;
-    padding: 8px;
-    text-align: center;
   }
 
   /* Main padding dikurangi */
@@ -771,10 +747,10 @@ footer:hover {
   }
 
   .sidebar-menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
-    width: 100%;
   }
 
   .sidebar-menu li {
@@ -782,10 +758,8 @@ footer:hover {
   }
 
   .sidebar-menu li a {
-    padding: 12px;
+    padding: 10px 15px;
     font-size: 0.9rem;
-    text-align: center;
-    border: 1px solid var(--border);
   }
 
   .logout-item {
@@ -796,22 +770,12 @@ footer:hover {
   }
 
   #logoutBtn {
-    width: 100%;
-    padding: 12px;
+    width: auto;
+    padding: 10px 30px;
   }
 
   .main-content {
     padding: 20px;
-  }
-  
-  /* Footer Storycam di HP */
-  #app-view {
-    min-height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-  }
-  footer {
-    margin-top: auto;
   }
 
   /* Header profile */
@@ -848,7 +812,29 @@ footer:hover {
 
 /* ----- Mobile (≤ 576px) ----- */
 @media (max-width: 576px) {
-  /* Nav rules inherited from 768px breakpoint (Hamburger menu & subnav wrap) */
+  /* Navigasi full stack */
+  .nav-primary {
+    flex-direction: column;
+    padding: 12px 15px;
+    gap: 8px;
+  }
+
+  .nav-primary button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .sub-nav {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .sub-nav button {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
 
   /* Main padding minimal */
   main {
