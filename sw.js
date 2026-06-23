@@ -32,6 +32,9 @@ self.addEventListener("fetch", (event) => {
   // Skip request non-GET (POST login, dll)
   if (request.method !== "GET") return;
 
+  // Skip request selain http/https (seperti chrome-extension://)
+  if (!url.protocol.startsWith("http")) return;
+
   // Skip request API
   if (url.pathname.startsWith("/api/")) return;
 
