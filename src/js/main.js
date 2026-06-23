@@ -410,6 +410,15 @@ installBtn.style.cssText = "display: none; background-color: #007bff; color: whi
 document.addEventListener("DOMContentLoaded", () => {
   const nav = document.querySelector(".nav-primary");
   if (nav) nav.appendChild(installBtn);
+  
+  const hamburgerBtn = document.getElementById("hamburger-btn");
+  const navMenu = document.getElementById("nav-menu");
+  if (hamburgerBtn && navMenu) {
+    hamburgerBtn.addEventListener("click", () => {
+      navMenu.classList.toggle("show");
+    });
+  }
+  
   router("profil");
 });
 
