@@ -15,6 +15,7 @@
         <button onclick="router('storycam')">Story Cam</button>
         <button onclick="router('cms')">CMS</button>
         <button onclick="showLogin()">Login</button>
+        <button id="btn-install" style="display: none; background-color: #007bff; color: white; font-weight: bold; border: none; border-radius: 5px; padding: 8px 15px; cursor: pointer;">📥 Pasang Aplikasi</button>
       </nav>
     </header>
 
@@ -55,5 +56,34 @@
           });
       });
     }
+
+    // Logika PWA Install Button
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Mencegah Chrome memunculkan prompt mini infobar bawaan
+      e.preventDefault();
+      // Simpan event agar bisa dipicu nanti
+      deferredPrompt = e;
+      
+      // Munculkan tombol Pasang Aplikasi yang tadi disembunyikan
+      const installBtn = document.getElementById('btn-install');
+      if (installBtn) {
+        installBtn.style.display = 'inline-block';
+        
+        installBtn.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            // Munculkan prompt instalasi bawaan Chrome
+            deferredPrompt.prompt();
+            // Tunggu user memilih Install atau Cancel
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+              console.log('User menerima instalasi PWA');
+              installBtn.style.display = 'none'; // Sembunyikan setelah sukses
+            }
+            deferredPrompt = null;
+          }
+        });
+      }
+    });
   </script>
 </html>
