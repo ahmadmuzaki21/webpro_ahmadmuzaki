@@ -1,60 +1,53 @@
-const CACHE = "web-profil-v2";
-
-const ASSETS = [
+const CACHE_NAME = "pwa-v3";
+const ASSETS_TO_CACHE = [
+  "/",
+  "/index.html",
   "/bundle.js",
   "/manifest.json",
-  "/images/1.jpg",
+  "/images/1.jpg"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
+  self.skipWaiting(); // Paksa SW baru langsung aktif
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys.map((key) => (key !== CACHE ? caches.delete(key) : null)),
-        ),
-      ),
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName); // Hapus cache versi lama
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
-  // ⚠️ HAPUS clients.claim() — ini biang refresh paksa
 });
 
 self.addEventListener("fetch", (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
+  if (event.request.method !== "GET") return;
+  if (!event.request.url.startsWith("http")) return;
 
-  // Skip request non-GET (POST login, dll)
-  if (request.method !== "GET") return;
-
-  // Skip request selain http/https (seperti chrome-extension://)
-  if (!url.protocol.startsWith("http")) return;
-
-  // Skip request API
-  if (url.pathname.startsWith("/api/")) return;
-
-  // Cache-First untuk aset statis
-  if (ASSETS.includes(url.pathname)) {
-    event.respondWith(
-      caches.match(request).then((res) => res || fetch(request)),
-    );
-    return;
-  }
-
-  // Network-First untuk halaman — tapi JANGAN cache response API
+  // Strategi Network First: Selalu ambil dari server internet dulu (Vercel)
+  // Jika server mati/offline, baru ambil dari Cache
   event.respondWith(
-    fetch(request)
-      .then((res) => {
-        // Hanya cache response yang valid dan bukan API
-        if (res.ok && res.type === "basic") {
-          const clone = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, clone));
-        }
-        return res;
+    fetch(event.request)
+      .then((response) => {
+        // Simpan versi terbarunya ke cache
+        const resClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, resClone);
+        });
+        return response;
       })
-      .catch(() => caches.match(request)),
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

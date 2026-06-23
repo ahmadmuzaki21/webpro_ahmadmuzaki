@@ -400,4 +400,32 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => router("profil"));
+// --- PWA LOGIC ---
+let deferredPrompt;
+const installBtn = document.createElement("button");
+installBtn.id = "btn-install";
+installBtn.innerText = "📥 Pasang Aplikasi";
+installBtn.style.cssText = "display: none; background-color: #007bff; color: white; font-weight: bold; border: none; border-radius: 5px; padding: 8px 15px; cursor: pointer; margin-left: 10px;";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".nav-primary");
+  if (nav) nav.appendChild(installBtn);
+  router("profil");
+});
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  }
+});
