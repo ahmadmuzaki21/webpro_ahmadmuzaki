@@ -16,6 +16,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "jimp": "^1.6.1",
     "leaflet": "^1.9.4"
   }
 }
